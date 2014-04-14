@@ -6,11 +6,15 @@
 
     var setOptions = function(select, data) {
         select.innerHTML = '';
-        for (var i = 0, length = data.length; i < length; i++) {
+        for (var i = 0; i < data.length; i++) {
 
             var option = document.createElement('option');
             option.value = data[i].value;
-            option.innerHTML = data[i].label;
+            if (data[i].label === undefined) {
+                option.innerHTML = option.value;
+            } else {
+                option.innerHTML = data[i].label;
+            }
 
             select.appendChild(option);
         }
@@ -24,9 +28,9 @@
         return tempData;
     };
 
+    var xhrs = [];
 
-    for (var i = 0, length = selectors.length; i < length; i++) {
-
+    for (var i = 0; i < selectors.length; i++) {
         var selector = selectors[i];
         var selectNames = selector.dataset.select.split(" ");
 
@@ -55,11 +59,11 @@
             };
         };
 
-        var xhr = new XMLHttpRequest();
+        xhrs[i] = new XMLHttpRequest();
 
-        var _callback = function(selector) {
+        var _callback = function(xhr, selector) {
             return function() {
-                if (xhr.readyState==4 && xhr.status==200) {
+                if (xhr.readyState === 4 && xhr.status === 200) {
                     var data = JSON.parse(xhr.responseText).data;
                     var tempDataForInit = data;
 
@@ -76,10 +80,11 @@
             };
         };
 
-        xhr.onreadystatechange = _callback(selector);
-        xhr.open('GET', selector.dataset.src, true);
-        xhr.send();
+        xhrs[i].onreadystatechange = _callback(xhrs[i], selector);
+        xhrs[i].open('GET', selector.dataset.src, true);
+        xhrs[i].send();
 
     }
+    console.log(xhrs);
 
 }());
