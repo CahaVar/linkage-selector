@@ -70,7 +70,7 @@
                     for (var j = 0, length = selector.selects.length; j < length; j++) {
 
                           setOptions(selector.selects[j], tempDataForInit);
-                          tempDataForInit = tempDataForInit[0].data;
+                          tempDataForInit = getData(j + 2, selector.selectIndexes, data);
 
                           if (j !== length - 1) {
                               selector.selects[j].onchange = _onchange(selector, j, data);
