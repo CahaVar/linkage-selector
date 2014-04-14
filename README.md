@@ -15,7 +15,7 @@ html5 + js 联动菜单
 </div>
 ```
 
-然后在html文件</body>之前添加：
+然后在html文件&lt;/body>之前添加：
 ```html
 <script src="linkage-selector.min.js"></script>
 ```
