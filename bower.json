@@ -1,0 +1,25 @@
+{
+    "name": "linkage-selector",
+    "version": "0.0.0",
+    "authors": [
+        "cahavar <cahavar@55yali.com>"
+    ],
+    "description": "A linkage html selector.",
+    "main": "linkage-selector.js",
+    "keywords": [
+        "linkage",
+        "selector",
+        "html",
+        "js",
+        "select"
+    ],
+    "license": "MIT",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests",
+        "npm-debug.log"
+    ]
+}
