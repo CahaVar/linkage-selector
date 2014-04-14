@@ -85,6 +85,5 @@
         xhrs[i].send();
 
     }
-    console.log(xhrs);
 
 }());
