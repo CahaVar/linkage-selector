@@ -39,17 +39,15 @@
               selector.selectIndexes[j] = 0;
         };
 
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', selector.dataset.src, false);
-        xhr.send();
-
-        var data = JSON.parse(xhr.responseText).data;
-        var tempDataForInit = data;
-
-        var _onchange = function(selector, index) {
+        var _onchange = function(selector, index, data) {
             return function() {
                 var thisData = getData(index + 1, selector.selectIndexes, data);
-                selector.selectIndexes[index] = thisData.indexOf(selector.selects[index].value);
+                for (var i = 0; i < thisData.length; i++) {
+                    if (thisData[i].value === selector.selects[index].value) {
+                        selector.selectIndexes[index] = i;
+                        break;
+                    }
+                }
 
                 var nextData = getData(index + 2, selector.selectIndexes, data);
                 setOptions(selector.selects[index + 1], nextData);
@@ -57,16 +55,30 @@
             };
         };
 
-        for (var j = 0, length = selector.selects.length; j < length; j++) {
+        var xhr = new XMLHttpRequest();
 
-              setOptions(selector.selects[j], tempDataForInit);
-              tempDataForInit = tempDataForInit[0].data;
+        var _callback = function(selector) {
+            return function() {
+                if (xhr.readyState==4 && xhr.status==200) {
+                    var data = JSON.parse(xhr.responseText).data;
+                    var tempDataForInit = data;
 
-              if (j !== length - 1) {
-                  selector.selects[j].onchange = _onchange(selector, j);
-              }
+                    for (var j = 0, length = selector.selects.length; j < length; j++) {
+
+                          setOptions(selector.selects[j], tempDataForInit);
+                          tempDataForInit = tempDataForInit[0].data;
+
+                          if (j !== length - 1) {
+                              selector.selects[j].onchange = _onchange(selector, j, data);
+                          }
+                    };
+                }
+            };
         };
 
+        xhr.onreadystatechange = _callback(selector);
+        xhr.open('GET', selector.dataset.src, true);
+        xhr.send();
 
     }
 
