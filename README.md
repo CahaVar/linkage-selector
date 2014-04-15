@@ -3,13 +3,16 @@ linkage-selector
 
 html5 + js 联动菜单
 
+#浏览器支持
+IE10+及各大主流浏览器(Chrome, FireFox, Safari, Opera)的最新的几个版本。
+
 #使用方法
 使用方法非常简单，您只需要设置三个参数。
 - __data-role__ : 将其设为 linkage-selector 即可
 - __data-src__ : json数据文件地址
-- __data-select__ : 联动菜单中用到的select的name属性，用空格符分隔，区分先后顺序。
+- __data-select__ : 联动菜单中用到的select的name属性，用空格符分隔，先后顺序决定触发事件。例如下面的例子，选择province的option会触发city的option列表的改变。
 ```html
-<div data-role="linkage-selector" data-src="../provinces.json" data-select="province city">
+<div data-role="linkage-selector" data-src="provinces.json" data-select="province city">
     <select name="province"></select>
     <select name="city"></select>
 </div>
@@ -17,10 +20,10 @@ html5 + js 联动菜单
 
 然后在html文件&lt;/body>之前添加：
 ```html
-<script src="linkage-selector.min.js"></script>
+<script src="linkage-selector.js"></script>
 ```
 
-再准备一个json文件存放数据：
+再准备一个json文件存放数据(label是option的显示文字，value是option的值，两者可以不相同)：
 ```json
 {
     "data": [
@@ -65,4 +68,4 @@ html5 + js 联动菜单
 }
 ```
 
-OK,就这么简单。请在服务器环境下使用。如果还不明白，可以参考[示例](https://github.com/CahaVar/linkage-selector/tree/master/test)。
+OK,就这么简单。请在服务器环境下使用。如果还有疑问，可以参考[示例](https://github.com/CahaVar/linkage-selector/tree/master/test)。

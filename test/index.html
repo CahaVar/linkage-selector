@@ -2,21 +2,40 @@
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title>linkage-selector test</title>
+    <title>联动菜单测试，示例</title>
 </head>
 <body>
+    <h1>联动菜单测试，示例</h1>
+    <hr/>
     <div data-role="linkage-selector" data-src="../provinces.json" data-select="province city">
+        <h2>这是一个标准的省市联动菜单</h2>
         <select name="province"></select>
         <select name="city"></select>
     </div>
-    <div data-role="linkage-selector" data-src="test.json" data-select="province city">
-        <select name="province"></select>
-        <select name="city"></select>
+    <hr/>
+    <div data-role="linkage-selector" data-src="test.json" data-select="language library">
+        <h2>数据省略label</h2>
+        <select name="language"></select>
+        <select name="library"></select>
     </div>
-    <div data-role="linkage-selector" data-src="three.json" data-select="province city area">
-        <select name="province"></select>
+    <hr/>
+    <div data-role="linkage-selector" data-src="../provinces.json" data-select="province city">
+        <h2>调整位置</h2>
         <select name="city"></select>
-        <select name="area"></select>
+        <select name="province"></select>
+    </div>
+    <hr/>
+    <div data-role="linkage-selector" data-select="province city">
+        <h2>异步测试，丢失数据源不会影响其它联动菜单</h2>
+        <select name="city"></select>
+        <select name="province"></select>
+    </div>
+    <hr/>
+    <div data-role="linkage-selector" data-src="three.json" data-select="side language frame">
+        <h2>三级联动菜单</h2>
+        <select name="side"></select>
+        <select name="language"></select>
+        <select name="frame"></select>
     </div>
     <script src="../linkage-selector.js"></script>
 </body>
