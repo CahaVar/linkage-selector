@@ -5,7 +5,7 @@
     var selectors = document.querySelectorAll('[data-role=linkage-selector]');
 
 
-    var setOptions = function(select, data) {
+    var setOptions = function(select, data, index) {
         select.innerHTML = '';
         for (var i = 0; i < data.length; i++) {
 
@@ -19,6 +19,7 @@
 
             select.appendChild(option);
         }
+        select.selectedIndex = index | 0;
     };
 
     var getData = function(dimension, indexes, data) {
@@ -40,7 +41,7 @@
             }
 
             var nextData = getData(index + 2, selector.selectIndexes, data);
-            setOptions(selector.selects[index + 1], nextData);
+            setOptions(selector.selects[index + 1], nextData, selector.selectIndexes[i]);
             if (selector.selects[index + 1].onchange) {
                 selector.selects[index + 1].onchange();
             }
@@ -50,17 +51,36 @@
     var _callback = function(xhr, selector) {
         return function() {
             if (xhr.readyState === 4 && xhr.status === 200) {
+
                 var data = JSON.parse(xhr.responseText).data;
-                var tempDataForInit = data;
+                var tempDataForInit = data; // 第1级数据
+
+                if (selector.dataset.init) {
+                    var initSelectValues = selector.dataset.init.split(' ');
+                    for (var i = 0; i < tempDataForInit.length; i++) {
+                        if (tempDataForInit[i].value === initSelectValues[0]) {
+                            selector.selectIndexes[0] = i;
+                        }
+                    }
+                }
+
 
                 for (var i = 0, length = selector.selects.length; i < length; i++) {
 
-                      setOptions(selector.selects[i], tempDataForInit);
-                      tempDataForInit = getData(i + 2, selector.selectIndexes, data);
+                    setOptions(selector.selects[i], tempDataForInit, selector.selectIndexes[i]);
+                    tempDataForInit = getData(i + 2, selector.selectIndexes, data);
 
-                      if (i !== length - 1) {
-                          selector.selects[i].onchange = _onchange(selector, i, data);
-                      }
+                    if (selector.dataset.init) {
+                        for (var j = 0; j < tempDataForInit.length; j++) {
+                            if (tempDataForInit[j].value === initSelectValues[i + 1]) {
+                                selector.selectIndexes[i + 1] = j;
+                            }
+                        }
+                    }
+
+                    if (i !== length - 1) {
+                        selector.selects[i].onchange = _onchange(selector, i, data);
+                    }
                 };
             }
         };
@@ -70,7 +90,7 @@
 
     for (var i = 0; i < selectors.length; i++) {
         var selector = selectors[i];
-        var selectNames = selector.dataset.select.split(" ");
+        var selectNames = selector.dataset.select.split(' ');
 
         selector.selects = selectNames.map(function(name) {
             return selectors[i].querySelector('[name=' + name + ']');

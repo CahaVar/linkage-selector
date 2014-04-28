@@ -4,9 +4,11 @@ linkage-selector
 html5 + js 联动菜单
 
 #浏览器支持
+
 IE10+及各大主流浏览器(Chrome, FireFox, Safari, Opera)的最新的几个版本。
 
 #使用方法
+
 使用方法非常简单，您只需要设置三个参数。
 - __data-role__ : 将其设为 linkage-selector 即可
 - __data-src__ : json数据文件地址
@@ -18,12 +20,26 @@ IE10+及各大主流浏览器(Chrome, FireFox, Safari, Opera)的最新的几个�
 </div>
 ```
 
+其它选项
+
+- __data-init__ : 设置初始选项，其值为option的value值序列，如
+
+```html
+<div data-role="linkage-selector" data-src="provinces.json" data-select="province city" data-init="广西 南宁">
+    <select name="province"></select>
+    <select name="city"></select>
+</div>
+```
+
+
 然后在html文件&lt;/body>之前添加：
+
 ```html
 <script src="linkage-selector.js"></script>
 ```
 
 再准备一个json文件存放数据(label是option的显示文字，value是option的值，两者可以不相同)：
+
 ```json
 {
     "data": [
@@ -46,7 +62,9 @@ IE10+及各大主流浏览器(Chrome, FireFox, Safari, Opera)的最新的几个�
     ]
 }
 ```
+
 也可以省去label属性，此时用value作为option的显示文字。
+
 ```json
 {
     "data": [
@@ -68,4 +86,4 @@ IE10+及各大主流浏览器(Chrome, FireFox, Safari, Opera)的最新的几个�
 }
 ```
 
-OK,就这么简单。请在服务器环境下使用。如果还有疑问，可以参考[示例](https://github.com/CahaVar/linkage-selector/tree/master/test)。
+OK,就这么简单。请在服务器环境下使用。如果还有疑问，可以参考[示例](https://github.com/CahaVar/linkage-selector/tree/master/example)。

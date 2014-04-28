@@ -1,6 +1,6 @@
 {
     "name": "linkage-selector",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "authors": [
         "cahavar <cahavar@55yali.com>"
     ],
@@ -19,6 +19,7 @@
         "**/.*",
         "node_modules",
         "bower_components",
+        "example",
         "test",
         "tests",
         "npm-debug.log"
