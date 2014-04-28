@@ -4,6 +4,7 @@
 
     var selectors = document.querySelectorAll('[data-role=linkage-selector]');
 
+
     var setOptions = function(select, data) {
         select.innerHTML = '';
         for (var i = 0; i < data.length; i++) {
@@ -40,7 +41,9 @@
 
             var nextData = getData(index + 2, selector.selectIndexes, data);
             setOptions(selector.selects[index + 1], nextData);
-
+            if (selector.selects[index + 1].onchange) {
+                selector.selects[index + 1].onchange();
+            }
         };
     };
 
@@ -50,13 +53,13 @@
                 var data = JSON.parse(xhr.responseText).data;
                 var tempDataForInit = data;
 
-                for (var j = 0, length = selector.selects.length; j < length; j++) {
+                for (var i = 0, length = selector.selects.length; i < length; i++) {
 
-                      setOptions(selector.selects[j], tempDataForInit);
-                      tempDataForInit = getData(j + 2, selector.selectIndexes, data);
+                      setOptions(selector.selects[i], tempDataForInit);
+                      tempDataForInit = getData(i + 2, selector.selectIndexes, data);
 
-                      if (j !== length - 1) {
-                          selector.selects[j].onchange = _onchange(selector, j, data);
+                      if (i !== length - 1) {
+                          selector.selects[i].onchange = _onchange(selector, i, data);
                       }
                 };
             }
