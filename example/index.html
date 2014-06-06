@@ -37,6 +37,15 @@
         <select name="city"></select>
         <select name="region"></select>
     </div>
+    <hr/>
+    <div id="create" data-src="test.json" data-select="language library">
+        <h2>使用构造函数初始化</h2>
+        <select name="language"></select>
+        <select name="library"></select>
+    </div>
     <script src="../linkage-selector.js"></script>
+    <script>
+        new LinkageSelector(document.getElementById('create'));
+    </script>
 </body>
 </html>
