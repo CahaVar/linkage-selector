@@ -20,6 +20,7 @@ IE10+及各大主流浏览器(Chrome, FireFox, Safari, Opera)的最新的几个�
 </div>
 ```
 
+
 其它选项
 
 - __data-init__ : 设置初始选项，其值为option的value值序列，如
@@ -38,7 +39,21 @@ IE10+及各大主流浏览器(Chrome, FireFox, Safari, Opera)的最新的几个�
 <script src="linkage-selector.js"></script>
 ```
 
-再准备一个json文件存放数据(label是option的显示文字，value是option的值，两者可以不相同)：
+您还可以省略data-role参数，使用构造函数动态创建联动菜单。
+```html
+<div id="test" data-src="provinces.json" data-select="province city">
+    <select name="province"></select>
+    <select name="city"></select>
+</div>
+```
+
+再添加如下代码
+```javascript
+var selector = new LinkageSelector(document.getElementById('test'));
+```
+
+
+最后准备一个json文件存放数据(label是option的显示文字，value是option的值，两者可以不相同)：
 
 ```json
 {

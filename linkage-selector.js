@@ -1,112 +1,166 @@
 'use strict';
 
+var LinkageSelector;
+
 (function() {
 
-    var selectors = document.querySelectorAll('[data-role=linkage-selector]');
+
+    /**
+     * 联动菜单构造函数
+     * @param element 包含selects的DOM对象
+     * @constructor
+     */
+    LinkageSelector = function (element) {
+
+        /**
+         * 根据data-select获取element中select的name
+         * @type {Array}
+         */
+        var selectNames = element.dataset.select.split(' ');
 
 
-    var setOptions = function(select, data, index) {
-        select.innerHTML = '';
-        for (var i = 0; i < data.length; i++) {
+        /**
+         * 根据select的name查询DOM获取select对象
+         * @type {Array}
+         */
+        var selects = selectNames.map(function (name) {
+            return element.querySelector('[name=' + name + ']');
+        });
 
-            var option = document.createElement('option');
-            option.value = data[i].value;
-            if (data[i].label === undefined) {
-                option.innerHTML = option.value;
-            } else {
-                option.innerHTML = data[i].label;
-            }
 
-            select.appendChild(option);
+        /**
+         * 每个select当前被选择的option的索引
+         * @type {Array}
+         */
+        var selectIndexes = [];
+        for (var i = 0; i < selects.length; i++) {
+            selectIndexes.push(0);
         }
-        select.selectedIndex = index | 0;
-    };
 
-    var getData = function(dimension, indexes, data) {
-        var tempData = data;
-        for (var i = 0; i < dimension - 1; i++) {
-            tempData = tempData[indexes[i]].data;
-        }
-        return tempData;
-    };
 
-    var _onchange = function(selector, index, data) {
-        return function() {
-            var thisData = getData(index + 1, selector.selectIndexes, data);
-            for (var i = 0; i < thisData.length; i++) {
-                if (thisData[i].value === selector.selects[index].value) {
-                    selector.selectIndexes[index] = i;
-                    break;
-                }
+        /**
+         * 数据源
+         * @type {string}
+         */
+        var dataSrc = element.dataset.src;
+
+
+        /**
+         * 根据数据源请求的数据
+         * @type {Array}
+         */
+        var data = [];
+
+
+        /**
+         * 根据当前的选择，获取某一层的数据
+         * @param layer
+         * @returns {Array} 返回[{label, value, data}]格式数据
+         */
+        var getData = function (layer) {
+            var tempData = data;
+            for (var i = 0; i < layer; i++) {
+                tempData = tempData[selectIndexes[i]].data;
             }
-
-            var nextData = getData(index + 2, selector.selectIndexes, data);
-            setOptions(selector.selects[index + 1], nextData, selector.selectIndexes[i]);
-            if (selector.selects[index + 1].onchange) {
-                selector.selects[index + 1].onchange();
-            }
+            return tempData;
         };
-    };
 
-    var _callback = function(xhr, selector) {
-        return function() {
-            if (xhr.readyState === 4 && xhr.status === 200) {
 
-                var data = JSON.parse(xhr.responseText).data;
-                var tempDataForInit = data; // 第1级数据
+        /**
+         * 设置select元素的option
+         * @param select select元素的DOM对象
+         * @param data [{label: String, value: String}]
+         * @param index 初始状态是选择第几项（从0开始，默认为0）
+         */
+        var setOptions = function (select, data, index) {
+            select.innerHTML = '';
+            for (var i = 0; i < data.length; i++) {
 
-                if (selector.dataset.init) {
-                    var initSelectValues = selector.dataset.init.split(' ');
-                    for (var i = 0; i < tempDataForInit.length; i++) {
-                        if (tempDataForInit[i].value === initSelectValues[0]) {
-                            selector.selectIndexes[0] = i;
-                        }
-                    }
+                var option = document.createElement('option');
+                option.value = data[i].value;
+                if (data[i].label) {
+                    option.innerHTML = data[i].label;
+                } else {
+                    option.innerHTML = option.value;
                 }
 
+                select.appendChild(option);
+            }
+            select.selectedIndex = index | 0;
+        };
 
-                for (var i = 0, length = selector.selects.length; i < length; i++) {
 
-                    setOptions(selector.selects[i], tempDataForInit, selector.selectIndexes[i]);
-                    tempDataForInit = getData(i + 2, selector.selectIndexes, data);
+        var xhr = new XMLHttpRequest();
 
-                    if (selector.dataset.init) {
-                        for (var j = 0; j < tempDataForInit.length; j++) {
-                            if (tempDataForInit[j].value === initSelectValues[i + 1]) {
-                                selector.selectIndexes[i + 1] = j;
+        xhr.onreadystatechange = function () {
+
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                data = JSON.parse(xhr.responseText).data;
+
+                if (element.dataset.init) {
+                    var initValue = element.dataset.init.split(' ');
+                    for (var i = 0; i < initValue.length; i++) {
+                        var initData = getData(i);
+                        for (var j = 0; j < initData.length; j++) {
+                            if (initValue[i] === initData[j].value) {
+                                selectIndexes[i] = j;
+                                break;
                             }
                         }
                     }
 
-                    if (i !== length - 1) {
-                        selector.selects[i].onchange = _onchange(selector, i, data);
+                }
+
+                for (var i = 0; i < selects.length; i++) {
+                    var optionData = getData(i);
+                    setOptions(selects[i], optionData, selectIndexes[i]);
+
+                    if (i < selects.length - 1) {
+                        selects[i].onchange = (function (i) {
+                            return function() {
+                                var select = this;
+                                var thisData = getData(i);
+                                for (var j = 0; j < thisData.length; j++) {
+                                    if (select.value === thisData[j].value) {
+                                        selectIndexes[i] = j;
+                                        setOptions(selects[i + 1], getData(i + 1), 0);
+
+                                        if (i < selects.length - 2) {
+                                            selects[i + 1].onchange();
+                                        }
+
+                                    }
+                                }
+                            };
+
+                        })(i);
                     }
-                };
+
+
+                }
+
+
             }
         };
+
+        xhr.open('GET', dataSrc, true);
+        xhr.send();
+
     };
 
-    var xhrs = [];
 
+
+    /**
+     * 页面中所有的linkage-selector
+     * @type {NodeList}
+     */
+    var selectors = document.querySelectorAll('[data-role=linkage-selector]');
+
+    // 初始化所有linkage-selector
     for (var i = 0; i < selectors.length; i++) {
-        var selector = selectors[i];
-        var selectNames = selector.dataset.select.split(' ');
-
-        selector.selects = selectNames.map(function(name) {
-            return selectors[i].querySelector('[name=' + name + ']');
-        });
-
-        selector.selectIndexes = [];
-        for (var j = 0, length = selector.selects.length; j < length; j++) {
-              selector.selectIndexes[j] = 0;
-        };
-
-        xhrs[i] = new XMLHttpRequest();
-
-        xhrs[i].onreadystatechange = _callback(xhrs[i], selector);
-        xhrs[i].open('GET', selector.dataset.src, true);
-        xhrs[i].send();
-
+        new LinkageSelector(selectors[i]);
     }
 
+
 }());
+

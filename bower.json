@@ -1,8 +1,9 @@
 {
     "name": "linkage-selector",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "authors": [
-        "cahavar <cahavar@55yali.com>"
+        "CahaVar <cahavar@55yali.com>",
+        "GruntingVar <cahavar@gmail.com>"
     ],
     "homepage": "https://github.com/CahaVar/linkage-selector.git",
     "description": "A linkage html selector.",
