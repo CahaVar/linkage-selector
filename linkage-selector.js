@@ -8,9 +8,10 @@ var LinkageSelector;
     /**
      * 联动菜单构造函数
      * @param element 包含selects的DOM对象
+     * @param onchange 选择一个选项后调用的回调函数, onchange(selectValues, selectIndexes)
      * @constructor
      */
-    LinkageSelector = function (element) {
+    LinkageSelector = function (element, onchange) {
 
         /**
          * 根据data-select获取element中select的name
@@ -87,6 +88,7 @@ var LinkageSelector;
                 select.appendChild(option);
             }
             select.selectedIndex = index | 0;
+            select.value = data[index].value;
         };
 
 
@@ -127,6 +129,11 @@ var LinkageSelector;
 
                                         if (i < selects.length - 2) {
                                             selects[i + 1].onchange();
+                                        } else {
+                                            var selectValues = selects.map(function(select) {
+                                                return select.value;
+                                            });
+                                            onchange(selectValues, selectIndexes);
                                         }
 
                                     }
