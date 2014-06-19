@@ -141,6 +141,14 @@ var LinkageSelector;
                             };
 
                         })(i);
+                    } else if (i === selects.length - 1) {
+                        selects[i].onchange = function() {
+                            var select = this;
+                            var selectValues = selects.map(function(select) {
+                                return select.value;
+                            });
+                            onchange(selectValues, selectIndexes);
+                        }
                     }
 
 
