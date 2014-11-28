@@ -133,7 +133,7 @@ var LinkageSelector;
                                             var selectValues = selects.map(function(select) {
                                                 return select.value;
                                             });
-                                            onchange(selectValues, selectIndexes);
+                                            onchange && onchange(selectValues, selectIndexes);
                                         }
 
                                     }
@@ -147,7 +147,7 @@ var LinkageSelector;
                             var selectValues = selects.map(function(select) {
                                 return select.value;
                             });
-                            onchange(selectValues, selectIndexes);
+                            onchange && onchange(selectValues, selectIndexes);
                         }
                     }
 
